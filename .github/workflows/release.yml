@@ -29,7 +29,7 @@ jobs:
           distribution: 'adopt'
       - name: Build with Gradle
         run: ./gradlew build
-            - name: Create release package
+      # - name: Create release package
       #- name:
       #  run: |
       #    version_timestamp="$(date '+%Y%m%d%H%M%S')"
