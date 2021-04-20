@@ -58,7 +58,7 @@ class JiraClient extends HttpClient{
         httpPost.setEntity(new StringEntity(jsonRequest))
 
         String jsonText = doPost(httpPost)
-        log.debug('Got JSON:\n{}', JsonOutput.prettyPrint(jsonText))
+        log.debug('Got JSON:\n{}', safeJsonPrettyPrint(jsonText))
 
         slurper.parseText(jsonText)
     }
@@ -67,7 +67,7 @@ class JiraClient extends HttpClient{
         log.debug('Start JSON get with rendered data to path {}', path)
 
         String jsonText = doGet(path, params)
-        log.debug('Got JSON:\n{}', JsonOutput.prettyPrint(jsonText))
+        log.debug('Got JSON:\n{}', safeJsonPrettyPrint(jsonText))
 
         slurper.parseText(jsonText)
     }

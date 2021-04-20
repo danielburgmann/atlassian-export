@@ -1,10 +1,13 @@
 package de.smarthelios.atlassian.io
 
+import groovy.json.JsonException
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.apache.http.HttpHeaders
 import org.apache.http.HttpHost
+import org.apache.http.HttpStatus
+import org.apache.http.StatusLine
 import org.apache.http.auth.AuthScope
 import org.apache.http.auth.Credentials
 import org.apache.http.auth.UsernamePasswordCredentials
@@ -110,10 +113,17 @@ class HttpClient {
 
     def doGetParsedJson(String path, Map<String, String> params) {
         String jsonText = doGet(path, params)
-        log.debug 'Got JSON:\n{}', JsonOutput.prettyPrint(jsonText)
+        log.debug 'Got JSON:\n{}', safeJsonPrettyPrint(jsonText)
 
-        def json = jsonSlurper.parseText(jsonText)
-        json
+        def json
+        try {
+            json = jsonSlurper.parseText(jsonText)
+        }
+        catch (JsonException e) {
+            log.error('Error while parsing json. Returning empty string.', e)
+            json = ''
+        }
+        return json
     }
 
     String doGet(String path, Map<String,String> params = [:]) {
@@ -131,7 +141,7 @@ class HttpClient {
 
         String result = null
         try {
-            log.info('Response status: {}', response.getStatusLine())
+            handleStatus(response.statusLine)
             result = EntityUtils.toString(response.getEntity())
         }
         catch (IOException e) {
@@ -161,7 +171,7 @@ class HttpClient {
         MimeTypeBytes result = new MimeTypeBytes()
 
         try {
-            log.info('Response status: {}', response.getStatusLine())
+            handleStatus(response.statusLine)
             result.mimeType = response.getFirstHeader(HttpHeaders.CONTENT_TYPE)?.value
             result.bytes = EntityUtils.toByteArray(response.getEntity())
         }
@@ -212,7 +222,7 @@ class HttpClient {
 
         String result = null
         try {
-            log.info('Response status: {}', response.getStatusLine())
+            handleStatus(response.statusLine)
             result = EntityUtils.toString(response.getEntity())
         }
         catch (IOException e) {
@@ -226,6 +236,16 @@ class HttpClient {
         result
     }
 
+    void handleStatus(StatusLine statusLine) {
+        log.info('Response status: {} - {}', statusLine, statusLine.reasonPhrase)
+        switch (statusLine.statusCode) {
+            case HttpStatus.SC_UNAUTHORIZED:
+            case HttpStatus.SC_FORBIDDEN:
+                log.error('Authorization failed. Check credentials!')
+                break
+        }
+    }
+
     static boolean isURI(String str) {
         try {
             URL url = new URL(str)
@@ -234,6 +254,16 @@ class HttpClient {
         }
         catch(MalformedURLException|URISyntaxException ignored) {
             false
+        }
+    }
+
+    static String safeJsonPrettyPrint(String jsonText) {
+        try {
+            return JsonOutput.prettyPrint(jsonText)
+        }
+        catch (JsonException e){
+            log.debug('Could not pretty print JSON. Will return original string.', e)
+            return jsonText
         }
     }
 
