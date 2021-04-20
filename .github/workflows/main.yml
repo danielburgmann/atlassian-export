@@ -28,7 +28,8 @@ jobs:
         run: |
           curl -s "https://get.sdkman.io" | bash
           source "/home/runner/.sdkman/bin/sdkman-init.sh"
+          sdk l java
       # List available java sdks
-      - name: List available java sdks
-        run: sdk l java
+      #- name: List available java sdks
+      #  run: sdk l java
 
