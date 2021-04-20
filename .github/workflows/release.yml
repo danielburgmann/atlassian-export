@@ -29,12 +29,11 @@ jobs:
           distribution: 'adopt'
       - name: Build with Gradle
         run: ./gradlew build
-      # - name: Create release package
-      #- name:
-      #  run: |
-      #    version_timestamp="$(date '+%Y%m%d%H%M%S')"
-      #    cp ./build/distributions/atl-export.zip ./atl-export-${version_timestamp}.zip
+      - name: Create release package
+        run: |
+          release_version="${GITHUB_REF#refs/*/v}"
+          cp ./build/distributions/atl-export.zip ./atl-export-${release_version}.zip
       - uses: ncipollo/release-action@v1
         with:
-          artifact: "build/distributions/atl-export.zip"
+          artifacts: "./atl-export-*.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
