@@ -1,6 +1,8 @@
 # intellij idea files
-.idea/
-out/
+/.idea/
+/out/
 # gradle build tool
-build/
-.gradle/
+/build/
+/.gradle/
+# a special test folder for local experimental test
+/src/test/groovy/git/ignored
