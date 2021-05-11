@@ -5,13 +5,13 @@ import de.smarthelios.atlassian.export.filter.HtmlFilter
 import de.smarthelios.atlassian.export.filter.ReplacementFilter
 import de.smarthelios.atlassian.export.model.Image
 import de.smarthelios.atlassian.export.model.ImageExportReplacement
-import de.smarthelios.atlassian.io.Gif
 import de.smarthelios.atlassian.io.Resource
 import de.smarthelios.confluence.export.model.Attachment
 import de.smarthelios.confluence.export.model.ExportMeta
 import de.smarthelios.confluence.export.model.Page
 import de.smarthelios.confluence.export.model.SpaceKeyPageTitle
 import de.smarthelios.confluence.io.ConfluenceClient
+import de.smarthelios.confluence.io.ImageReplacements
 import groovy.json.JsonOutput
 import groovy.text.SimpleTemplateEngine
 import groovy.text.Template
@@ -40,11 +40,6 @@ class ConfluenceExport {
     static final String ATTACHMENTS_DIR = 'attachments'
     static final String IMAGES_DIR = 'images'
 
-    static final ImageExportReplacement TRANSPARENT_PIXEL = new ImageExportReplacement(
-            filename: Gif.TRANSPARENT.filename,
-            bytes: Gif.TRANSPARENT.bytes
-    )
-
     private static final SimpleTemplateEngine templateEngine = new SimpleTemplateEngine()
     private static final Template pageTpl = templateEngine.createTemplate(Resource.confluenceExport('/template/page.html'))
     private static final Template indexTpl = templateEngine.createTemplate(Resource.confluenceExport('/template/index.html'))
@@ -52,6 +47,7 @@ class ConfluenceExport {
     private static final Pattern startWithHashSign = ~/^\s*#.*/
     private static final Pattern startWithSlashPattern = ~/(?s)^\s*(?<slash>\/.*)/
     private static final Pattern isViewPageAction = ~/^\/pages\/viewpage\.action$/
+    private static final Pattern isViewPageActionPageId = ~/^viewpage.action\?pageId=\d+/
     private static final Pattern isDisplayPath = ~/^\/display\/.*/
 
 
@@ -163,10 +159,9 @@ class ConfluenceExport {
 
         pages.each { imagePage ->
             imagePage.images.each { image ->
-
-                if(ConfluenceClient.isJiraConfluenceMacroImgSrc(image.downloadUrl)) {
-                    log.info 'Will replace JIRA macro image "{}" by transparent pixel gif', image.downloadUrl
-                    image.replacement = TRANSPARENT_PIXEL
+                ImageExportReplacement replacement = ImageReplacements.get(image.downloadUrl)
+                if(replacement) {
+                    image.replacement = replacement
                 }
                 else {
                     // prefer image page attachments in search for replacements
@@ -388,7 +383,10 @@ class ConfluenceExport {
         // when do we have to replace an href?
         // if it starts with a hash sign then ignore it as local anchor ref
         // else
-        //   if it starts with a "/", then it is sanitized replacement = baseURl + href
+        //   if it starts with a "/"
+        //      then it is sanitized replacement = baseURl + href
+        //   if it starts with "viewpage.action?pageId="
+        //      then it is sanitized replacement = baseUrl + '/pages/' + href
         //   afterwards:
         //   if it matches baseUrl + /pages/viewpage.action?pageId=<exported_page_id>,
         //     then
@@ -421,6 +419,8 @@ class ConfluenceExport {
                     Matcher startWithSlash = startWithSlashPattern.matcher(href)
                     if (startWithSlash.matches()) {
                         replacement = baseUrl + startWithSlash.group('slash')
+                    } else if(isViewPageActionPageId.matcher(href).matches()) {
+                        replacement = baseUrl + '/pages/' + href
                     } else {
                         replacement = href
                     }

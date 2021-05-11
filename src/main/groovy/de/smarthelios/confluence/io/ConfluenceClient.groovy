@@ -151,8 +151,8 @@ class ConfluenceClient extends HttpClient {
     }
 
     void downloadImage(Image image) {
-        log.info 'Retrieving image binary data of image with downloadUrl {}', image.downloadUrl
         if(isRoadmapPluginImgSrc(image.downloadUrl)) {
+            log.info 'Retrieving image binary data of image with downloadUrl {}', image.downloadUrl
             image.mimeTypeBytes = doGetBytesForUrl(baseUrl + image.downloadUrl)
             image.namingHint = 'roadmap'
         }
@@ -161,10 +161,15 @@ class ConfluenceClient extends HttpClient {
             image.namingHint = 'jira'
         }
         else if(image.downloadUrl.startsWith(baseUrl)) {
+            log.info 'Retrieving image binary data of image with downloadUrl {}', image.downloadUrl
             image.mimeTypeBytes = doGetBytesForUrl(image.downloadUrl)
         }
         else if(isURI(image.downloadUrl)) {
+            log.info 'Retrieving image binary data of image with downloadUrl {}', image.downloadUrl
             image.mimeTypeBytes = doGetBytesForUrl(image.downloadUrl)
+        }
+        else if(ImageReplacements.exists(image.downloadUrl)) {
+            log.info 'Will not download image "{}", as it will be replaced later.', image.downloadUrl
         }
         else {
             log.error 'Can not handle image downloadUrl "{}"', image.downloadUrl

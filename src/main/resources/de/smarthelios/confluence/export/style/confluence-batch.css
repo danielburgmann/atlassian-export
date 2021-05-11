@@ -37,3 +37,19 @@ a, a:visited, a:focus, a:hover, a:active, a.blogHeading {
     color: #0052cc;
     text-decoration: none
 }
+
+table.confluenceTable {
+    border-collapse: collapse;
+}
+
+.confluenceTh, .confluenceTd {
+    border: 1px solid #c1c7d0;
+    padding: 7px 10px;
+    vertical-align: top;
+    text-align: left;
+}
+
+img.userLogo {
+    width: 1em;
+    height: 1em;
+}

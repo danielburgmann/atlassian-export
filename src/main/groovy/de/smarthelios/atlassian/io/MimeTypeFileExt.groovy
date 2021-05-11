@@ -16,13 +16,16 @@ class MimeTypeFileExt {
     private List<String> allExtensions = []
 
     private MimeTypeFileExt() {
-        String mapping = getClass().getResourceAsStream('/apache-httpd-mime-types/mime.types').text
-        mapping.eachLine { line ->
-            if(!line.startsWith('#')) {
-                List<String> tuple = line.tokenize()
-                String mimeType = tuple.pop()
-                mimeTypeToFileExtensions[mimeType] = tuple
-                allExtensions.addAll(tuple)
+        String mimeTypes = getClass().getResourceAsStream('/apache-httpd-mime-types/mime.types').text
+        String additionalMimeTypes = getClass().getResourceAsStream('/apache-httpd-mime-types/additional.mime.types').text
+        for(String mapping in [mimeTypes, additionalMimeTypes]) {
+            mapping.eachLine { line ->
+                if(!line.startsWith('#')) {
+                    List<String> tuple = line.tokenize()
+                    String mimeType = tuple.pop()
+                    mimeTypeToFileExtensions[mimeType] = tuple
+                    allExtensions.addAll(tuple)
+                }
             }
         }
     }
