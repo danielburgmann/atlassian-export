@@ -83,7 +83,7 @@ class Page {
             images
         }
         else {
-            log.error 'Cannot return images for page without initialized exportView [pageId:{}]', id
+            log.warn 'Cannot return images for page without initialized exportView [pageId:{}]', id
 
             []
         }

@@ -2,6 +2,7 @@ package de.smarthelios.confluence.io
 
 import de.smarthelios.atlassian.export.model.Image
 import de.smarthelios.atlassian.io.HttpClient
+import de.smarthelios.atlassian.io.MimeTypeBytes
 import de.smarthelios.confluence.export.model.Attachment
 import de.smarthelios.confluence.export.model.Page
 import groovy.json.JsonSlurper
@@ -156,9 +157,19 @@ class ConfluenceClient extends HttpClient {
             image.mimeTypeBytes = doGetBytesForUrl(baseUrl + image.downloadUrl)
             image.namingHint = 'roadmap'
         }
+        else if(isConfluencePluginImgSrc(image.downloadUrl)) {
+            log.info 'Retrieving image binary data of image with downloadUrl {}', image.downloadUrl
+            image.mimeTypeBytes = doGetBytesForUrl(baseUrl + image.downloadUrl)
+            image.namingHint = 'confluence'
+        }
         else if(isJiraConfluenceMacroImgSrc(image.downloadUrl)) {
             log.info 'Identified JIRA macro image URL "{}', image.downloadUrl
             image.namingHint = 'jira'
+        }
+        else if(isConfluenceSystemImage(image.downloadUrl)) {
+            log.info 'Identified strange system images (e.g. recent space activity macro).'
+            image.mimeTypeBytes = doGetBytesForSystemImage(image.downloadUrl)
+            image.namingHint = buildSystemImageNamingHint(image.downloadUrl)
         }
         else if(image.downloadUrl.startsWith(baseUrl)) {
             log.info 'Retrieving image binary data of image with downloadUrl {}', image.downloadUrl
@@ -176,6 +187,11 @@ class ConfluenceClient extends HttpClient {
         }
     }
 
+    private MimeTypeBytes doGetBytesForSystemImage(String downloadUrl) {
+        String imageUrl = downloadUrl.startsWith(baseUrl) ? downloadUrl : baseUrl + downloadUrl
+        doGetBytesForUrl(imageUrl)
+    }
+
     String getSpace() {
         doGet('/rest/api/space')
     }
@@ -188,7 +204,25 @@ class ConfluenceClient extends HttpClient {
         downloadUrl.startsWith('/plugins/servlet/roadmap')
     }
 
+    static final boolean isConfluencePluginImgSrc(String downloadUrl) {
+        downloadUrl.startsWith('/plugins/servlet/confluence')
+    }
+
     static final boolean isJiraConfluenceMacroImgSrc(String downloadUrl) {
         downloadUrl in ['$iconUrl','$statusIcon']
     }
+
+    final boolean isConfluenceSystemImage(String downloadUrl) {
+        String checkUrl = downloadUrl.startsWith(baseUrl) ? downloadUrl.substring(baseUrl.length()) : downloadUrl
+        checkUrl ==~ /\/s\/.+\/images\/.+/
+    }
+
+    static final String buildSystemImageNamingHint(String downloadUrl) {
+        String afterImages = downloadUrl.split('/images/').last()
+        List<String> pathElements = afterImages.split('/').toList()
+        pathElements.removeLast()
+        'sys-' + pathElements.join('-')
+    }
+
+
 }

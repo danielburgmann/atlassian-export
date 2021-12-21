@@ -33,7 +33,7 @@ class Image {
             hash = bytes.md5()
         }
         else {
-            log.error 'Cannot generate image hash name without content bytes for image with downlodUrl {}', downloadUrl
+            log.error 'Cannot generate image hash name without content bytes for image with downloadUrl {}', downloadUrl
             hash = 'no-bytes'
         }
 
