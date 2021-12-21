@@ -69,7 +69,7 @@ class App {
                ATL_EXP_PW    password for authentication in production environments.
 
         EXAMPLES
-               atl-export -t confluence -u ann -p anns_pass -o /tmp/doc http://confluence.com:8090 TEST test
+               atl-export -t confluence -u ann -p anns_pass -o /tmp/doc https:///confluence.com:8090 TEST test
 
                Exports page "test" and all its sub pages of space TEST from confluence host "confluence.com" listening on port 8090 to directory "/tmp/doc".
                Uses user "ann" with password "anns_pass". 

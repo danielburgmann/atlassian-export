@@ -14,13 +14,13 @@ class ReplacementFilterTest extends Specification {
                 title:'Test',
                 exportView: '''\
                     <div>
-                        <a href="http://localhost:8090/pages/viewpage.action?pageId=67890">foo</a>
+                        <a href="https://localhost:8090/pages/viewpage.action?pageId=67890">foo</a>
                     </div>
                     <div>
-                        <a href="http://localhost:8090/pages/viewpage.action?pageId=78901">bar</a>
+                        <a href="https://localhost:8090/pages/viewpage.action?pageId=78901">bar</a>
                     </div>
                     <div>
-                        <a href="http://example.org">example</a>
+                        <a href=https:////example.org">example</a>
                     </div>
                     '''.stripIndent()
         )
@@ -43,7 +43,7 @@ class ReplacementFilterTest extends Specification {
                     <a href="78901.html">bar</a>
                 </div>
                 <div>
-                    <a href="http://example.org">example</a>
+                    <a href="https://example.org">example</a>
                 </div>
                 '''.stripIndent()
     }

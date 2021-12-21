@@ -18,7 +18,7 @@
             <table>
                 <tr>
                     <td class="label">Type:</td>
-                    <td class="value"><img src="<%= imagesDir %>/<%= issue.issueType.iconImage.exportFilename %>" /> <%= issue.issueType.name %></td>
+                    <td class="value"><img src="<%= imagesDir %>/<%= issue.issueType.iconImage.exportFilename %>" alt="<%= issue.issueType.name %>"/> <%= issue.issueType.name %></td>
                     <td class="label">Design:</td>
                     <td class="value"><%= issue.design ?: '-' %></td>
                 </tr>

@@ -67,7 +67,7 @@ The project is written in [Groovy](https://groovy-lang.org/) and the build tool 
 The project directory layout is using the common Java / Groovy conventions based on
 [Maven directory layout](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html).
 You will find the sources in `src/main/` and the test sources in `src/test/`. The package structure is divided 
-into the three parts `atlassian`, `confluence` and `jira`. Everything in `atlassian` is not JIRA or Confluence spcific code
+into the three parts `atlassian`, `confluence` and `jira`. Everything in `atlassian` is not JIRA or Confluence specific code
 and often used by both supported export types (`jira` and `confluence`).
 To keep the project easy to refactor direct dependencies between packages `jira`
 and `confluence` are undesired.
@@ -91,7 +91,7 @@ The instances will be reachable under <http://localhost:8090> (Confluence) and <
 
 After setting up Confluence you can import a sample Confluence space "TEST" for testing from
 `./src/test/resources/confluence/Confluence-space-export-TEST.xml.zip`.
-Therefore navigate in Confluence to "Administration" / "General configuration" / "Administration - Backup & Restore"
+Therefore, navigate in Confluence to "Administration" / "General configuration" / "Administration - Backup & Restore"
 / "Import Confluence data" / "Upload a site or space export file" and upload the ZIP file.
 
 ## Links
