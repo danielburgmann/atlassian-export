@@ -32,6 +32,7 @@ class JiraExport {
     static final String STYLES_DIR = 'styles'
     static final String ATTACHMENTS_DIR = 'attachments'
     static final String IMAGES_DIR = 'images'
+    static final String JSON_DIR = 'json'
 
     static final String[] CUSTOM_FIELD_NAMES = ['Design',
                                                 'Epic Link',
@@ -96,17 +97,19 @@ class JiraExport {
             File attachmentsDir = new File(dir, ATTACHMENTS_DIR)
             File imagesDir = new File(dir, IMAGES_DIR)
             File cssDir = new File(dir, STYLES_DIR)
+            File jsonDir = new File(dir, JSON_DIR)
 
             dir.mkdirs()
             attachmentsDir.mkdirs()
             imagesDir.mkdirs()
             cssDir.mkdirs()
+            jsonDir.mkdirs()
 
             generateStyles(cssDir)
             generateIndex(issues, dir, exportMeta)
             generateLabelIndex(issues, dir)
 
-            exportJson(issues, dir)
+            exportJson(issues, jsonDir)
             exportImages(exportMeta.images, imagesDir)
             exportAttachments(issues, attachmentsDir)
             exportIssueImages(issues, imagesDir)
@@ -132,13 +135,19 @@ class JiraExport {
     }
 
     static void exportJson(List<Issue> issues, File dir) {
-        File jsonExportFile = new File(dir, 'atlassian-jira-export.json')
-        jsonExportFile.text = JsonOutput.prettyPrint(
-                JsonOutput.toJson(issues.collect { JiraModel.toMap(it) })
-        )
+        log.info 'Exporting issues to JSON.'
+        issues.each {issue ->
+            log.info('Exporting JSON for issue {} - "{}"', issue.key, issue.summary)
+            String filename = issue.getExportFilename('json')
+            File jsonExportFile = new File(dir, filename)
+            jsonExportFile.text = JsonOutput.prettyPrint(
+                    JsonOutput.toJson(JiraModel.toMap(issue))
+            )
+        }
     }
 
     static void exportImages(List<Image> images, File dir) {
+        log.info 'Exporting images.'
         images.each { image ->
             log.info('Exporting image {}', image.downloadUrl)
             new File(dir, image.exportFilename).bytes = image.bytes
@@ -146,6 +155,7 @@ class JiraExport {
     }
 
     static void exportAttachments(List<Issue> issues, File dir) {
+        log.info 'Exporting attachments.'
         issues.each { issue ->
             File attachmentsDir = new File(dir, issue.key)
             attachmentsDir.mkdirs()
@@ -159,6 +169,7 @@ class JiraExport {
     }
 
     static void exportIssueImages(List<Issue> issues, File dir) {
+        log.info 'Exporting issue images.'
         issues.each { issue ->
 
             File imagesDir = new File(dir, issue.key)
@@ -176,6 +187,7 @@ class JiraExport {
     }
 
     static void exportCommentImages(List<Comment> comments, File dir) {
+        log.info 'Exporting comment images.'
         comments.each { comment ->
 
             File imagesDir = new File(dir, comment.id)
@@ -191,9 +203,10 @@ class JiraExport {
     }
 
     static void exportIssues(List<Issue> issues, File dir, ExportMeta exportMeta = new ExportMeta()) {
+        log.info 'Exporting issues to HTML.'
         Issues allIssues = new Issues(issues: issues)
         issues.each { issue ->
-            log.info('Exporting issue {} - "{}"', issue.key, issue.summary)
+            log.info('Exporting HTML for issue {} - "{}"', issue.key, issue.summary)
 
             new File(dir, issue.exportFilename).text = htmlIssue(issue, allIssues, exportMeta)
         }

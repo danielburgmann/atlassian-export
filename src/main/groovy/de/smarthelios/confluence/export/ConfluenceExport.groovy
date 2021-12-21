@@ -39,6 +39,7 @@ class ConfluenceExport {
     static final String STYLES_DIR = 'styles'
     static final String ATTACHMENTS_DIR = 'attachments'
     static final String IMAGES_DIR = 'images'
+    static final String JSON_DIR = 'json'
 
     private static final SimpleTemplateEngine templateEngine = new SimpleTemplateEngine()
     private static final Template pageTpl = templateEngine.createTemplate(Resource.confluenceExport('/template/page.html'))
@@ -92,15 +93,17 @@ class ConfluenceExport {
             File attachmentsDir = new File(dir, ATTACHMENTS_DIR)
             File imagesDir = new File(dir, IMAGES_DIR)
             File cssDir = new File(dir, STYLES_DIR)
+            File jsonDir = new File(dir, JSON_DIR)
 
             dir.mkdirs()
             attachmentsDir.mkdirs()
             imagesDir.mkdirs()
             cssDir.mkdirs()
+            jsonDir.mkdirs()
 
             processImages(pageForrest)
 
-            exportJson(pageForrest, dir)
+            exportJson(pageForrest, jsonDir)
 
             generateStyles(cssDir)
             generateIndex(pageForrest, dir, exportMeta)
@@ -144,8 +147,9 @@ class ConfluenceExport {
     }
 
     static void exportPages(List<Page> pageForrest, File dir, List<HtmlFilter> filters = []) {
+        log.info 'Exporting pages to HTML.'
         Page.flatten(pageForrest).each { page ->
-            log.info('Exporting page with title "{}"', page.title)
+            log.info('Exporting page HTML with title "{}"', page.title)
 
             Map<String,String> imageSrcReplacements = buildImageSrcReplacements(page)
             HtmlFilter imageSrcFilter = new ReplacementFilter(imageSrcReplacements)
@@ -183,13 +187,19 @@ class ConfluenceExport {
     }
 
     static void exportJson(List<Page> pageForrest, File dir) {
-        File jsonExportFile = new File(dir, 'atlassian-confluence-export.json')
-        jsonExportFile.text = JsonOutput.prettyPrint(
-                JsonOutput.toJson(pageForrest.collect { ConfluenceModel.toMap(it) })
-        )
+        log.info 'Exporting pages to JSON.'
+        pageForrest.each {page ->
+            log.info('Exporting page JSON with title "{}"', page.title)
+            String filename = page.getExportFileName('json')
+            File jsonExportFile = new File(dir, filename)
+            jsonExportFile.text = JsonOutput.prettyPrint(
+                    JsonOutput.toJson(ConfluenceModel.toMap(page))
+            )
+        }
     }
 
     static void exportImages(List<Page> pageForrest, File dir) {
+        log.info 'Exporting images.'
         Page.flatten(pageForrest).each { page ->
 
             File imagesDir = new File(dir, page.id)
@@ -215,6 +225,7 @@ class ConfluenceExport {
     }
 
     static void exportAttachments(List<Page> pageForrest, File dir) {
+        log.info 'Exporting attachments.'
         Page.flatten(pageForrest).each { page ->
 
             File attachmentsDir = new File(dir, page.id)

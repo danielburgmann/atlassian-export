@@ -50,14 +50,14 @@ class Issue {
         EXPORTABLE_SUMMARY_REGEXP.matcher(summary).matches()
     }
 
-    String getExportFilename() {
+    String getExportFilename(String fileExt = 'html') {
         if(exportableSummary) {
             // we can replace everything we want in the summary for filename use
             // as uniqueness is guaranteed by prepending issue key
-            "${key}_${StringUtils.replaceChars(summary, ' .', '__')}.html"
+            "${key}_${StringUtils.replaceChars(summary, ' .', '__')}.${fileExt}"
         }
         else {
-            "${key}.html"
+            "${key}.${fileExt}"
         }
     }
 

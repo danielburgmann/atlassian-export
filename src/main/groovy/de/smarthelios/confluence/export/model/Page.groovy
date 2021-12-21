@@ -28,14 +28,14 @@ class Page {
     @Lazy
     Document queryDoc = Jsoup.parse(exportView)
 
-    String getExportFileName() {
+    String getExportFileName(String fileExt = 'html') {
         if(exportableTitle) {
             // we can replace everything we want in the title for filename use
             // as uniqueness is guaranteed by attaching page id.
-            StringUtils.replaceChars(title, ' .', '__') + "_${id}.html"
+            StringUtils.replaceChars(title, ' .', '__') + "_${id}.${fileExt}"
         }
         else {
-            "${id}.html"
+            "${id}.${fileExt}"
         }
     }
 
