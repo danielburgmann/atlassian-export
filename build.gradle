@@ -11,20 +11,21 @@ plugins {
 mainClassName = 'de.smarthelios.atlassian.export.App'
 
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:2.5.9'
-    implementation 'org.apache.httpcomponents:fluent-hc:4.5.11'
-    implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'org.slf4j:slf4j-api:1.7.30'
-    implementation 'org.slf4j:slf4j-simple:1.7.30'
-    implementation 'org.jsoup:jsoup:1.12.2'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.9'
+    implementation 'org.codehaus.groovy:groovy-cli-commons:3.0.9'
+    implementation 'org.apache.httpcomponents:fluent-hc:4.5.13'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'org.slf4j:slf4j-simple:1.7.32'
+    implementation 'org.jsoup:jsoup:1.14.3'
 
     // JAXB dependencies for JDK versions greater than 9
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.1'
 
     // Use the awesome Spock testing and specification framework
-    testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
-    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.26.0'
+    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+    testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
 }
 
 // In this section you declare where to find the dependencies of your project
