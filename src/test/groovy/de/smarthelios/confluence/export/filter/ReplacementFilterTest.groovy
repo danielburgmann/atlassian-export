@@ -20,7 +20,7 @@ class ReplacementFilterTest extends Specification {
                         <a href="https://localhost:8090/pages/viewpage.action?pageId=78901">bar</a>
                     </div>
                     <div>
-                        <a href=https:////example.org">example</a>
+                        <a href="https://example.org">example</a>
                     </div>
                     '''.stripIndent()
         )
@@ -29,7 +29,7 @@ class ReplacementFilterTest extends Specification {
                 new Page(id: '78901',title: 'Bad Title ?'),
                 page
         ]
-        def filter = ConfluenceExport.buildHrefFilter(otherPages, 'http://localhost:8090')
+        def filter = ConfluenceExport.buildHrefFilter(otherPages, 'https://localhost:8090')
 
         when:
         def out = page.exportViewFiltered([filter])
