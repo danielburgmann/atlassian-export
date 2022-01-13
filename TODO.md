@@ -1,5 +1,12 @@
 # Open TODOs
 
+## General
+
+* replace html treated as string replacement by DOM based approach
+  * image src
+  * hrefs
+  * entities (0x00A0 to `&nbsp;`)
+
 ## Confluence export
 
 * implement dryRun Option for confluence export

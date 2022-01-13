@@ -1,6 +1,7 @@
 package de.smarthelios.confluence.export
 
 import de.smarthelios.atlassian.export.convert.Html
+import de.smarthelios.atlassian.export.filter.EntityFilter
 import de.smarthelios.atlassian.export.filter.HtmlFilter
 import de.smarthelios.atlassian.export.filter.ReplacementFilter
 import de.smarthelios.atlassian.export.model.Image
@@ -368,7 +369,8 @@ class ConfluenceExport {
     static List<HtmlFilter> buildStandardFilters(List<Page> pageForrest,
                                                  String confluenceBaseUrl) {
         List<HtmlFilter> list = [
-                buildHrefFilter(pageForrest, confluenceBaseUrl)
+                buildHrefFilter(pageForrest, confluenceBaseUrl),
+                EntityFilter.instance
         ]
         list
     }
