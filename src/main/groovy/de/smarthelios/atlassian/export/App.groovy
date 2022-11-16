@@ -159,6 +159,7 @@ class App {
             String scheme = url.protocol
             int port = url.port ?: url.defaultPort
             String host = url.host
+            String basePath = url.path
 
             String[] spaceKeyPageTuples = exportArgs.tail()
 
@@ -173,6 +174,9 @@ class App {
                     port,
                     scheme
             )
+            if(basePath) {
+                confluenceClient.basePath = basePath
+            }
 
             ConfluenceExport export = new ConfluenceExport(confluenceClient)
 
@@ -205,6 +209,7 @@ class App {
             String scheme = url.protocol
             int port = url.port ?: url.defaultPort
             String host = url.host
+            String basePath = url.path
 
             String jql = exportArgs.tail().first()
 
@@ -217,6 +222,9 @@ class App {
                     port,
                     scheme
             )
+            if(basePath) {
+                jiraClient.basePath = basePath
+            }
             jiraClient.dryRun = dryRun
 
             JiraExport export = new JiraExport(jiraClient)
