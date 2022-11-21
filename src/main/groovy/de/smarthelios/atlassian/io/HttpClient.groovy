@@ -244,8 +244,11 @@ class HttpClient {
 
     static void handleStatus(StatusLine statusLine) {
         log.info('Response status: {} - {}', statusLine, statusLine.reasonPhrase)
-        if(statusLine.statusCode in [HttpStatus.SC_UNAUTHORIZED,HttpStatus.SC_FORBIDDEN]) {
+        if([HttpStatus.SC_UNAUTHORIZED,HttpStatus.SC_FORBIDDEN].contains(statusLine.statusCode)) {
             log.error('Authorization failed. Check credentials!')
+        }
+        else if(HttpStatus.SC_NOT_FOUND == statusLine.statusCode) {
+            log.warn('Resource not found.')
         } // no else: nothing to log for now
     }
 

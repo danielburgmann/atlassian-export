@@ -132,7 +132,7 @@ class ConfluenceClient extends HttpClient {
 
     void downloadAttachment(Attachment attachment) {
         log.info 'Retrieving binary data of attachment with id {}', attachment.id
-        attachment.bytes = doGetBytesForUrl(baseUrl + attachment.downloadUrl).bytes
+        attachment.bytes = doGetBytesForUrl(baseUrl + basePath + attachment.downloadUrl).bytes
     }
 
     void downloadPageImages(List<Page> pageForrest) {
@@ -161,6 +161,11 @@ class ConfluenceClient extends HttpClient {
             log.info 'Retrieving image binary data of image with downloadUrl {}', image.downloadUrl
             image.mimeTypeBytes = doGetBytesForUrl(baseUrl + image.downloadUrl)
             image.namingHint = 'confluence'
+        }
+        else if(isConfluenceCloudAttachmentImgSrc(image.downloadUrl)) {
+            log.info 'Retrieving image binary data of image with downloadUrl {}', image.downloadUrl
+            image.mimeTypeBytes = doGetBytesForUrl(baseUrl + image.downloadUrl)
+            image.namingHint = 'attachement'
         }
         else if(isJiraConfluenceMacroImgSrc(image.downloadUrl)) {
             log.info 'Identified JIRA macro image URL "{}', image.downloadUrl
@@ -215,6 +220,10 @@ class ConfluenceClient extends HttpClient {
     final boolean isConfluenceSystemImage(String downloadUrl) {
         String checkUrl = downloadUrl.startsWith(baseUrl) ? downloadUrl.substring(baseUrl.length()) : downloadUrl
         checkUrl ==~ /\/s\/.+\/images\/.+/
+    }
+
+    static final boolean isConfluenceCloudAttachmentImgSrc(String downloadUrl) {
+        downloadUrl.startsWith('/wiki/download/attachments')
     }
 
     static final String buildSystemImageNamingHint(String downloadUrl) {
