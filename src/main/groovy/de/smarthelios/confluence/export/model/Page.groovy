@@ -67,7 +67,7 @@ class Page {
                     .collect { it.attr('href') }
         }
         else {
-            log.error 'Trying to analyze exportView hrefs without content for page {}', id
+            log.warn 'Trying to analyze exportView hrefs without content [pageId:{}]. Page without content?', id
 
             []
         }
@@ -83,7 +83,7 @@ class Page {
             images
         }
         else {
-            log.warn 'Cannot return images for page without initialized exportView [pageId:{}]', id
+            log.warn 'Cannot return images for page without initialized exportView [pageId:{}]. Page without content?', id
 
             []
         }

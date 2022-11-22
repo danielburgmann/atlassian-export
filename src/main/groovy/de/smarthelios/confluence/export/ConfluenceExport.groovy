@@ -219,7 +219,12 @@ class ConfluenceExport {
                 }
                 else {
                     log.info('Exporting page[id:{}] image {}', page.id, image.downloadUrl)
-                    new File(imagesDir, image.exportFilename).bytes = image.bytes
+                    if(image.bytes) {
+                        new File(imagesDir, image.exportFilename).bytes = image.bytes
+                    }
+                    else {
+                        log.error('No bytes for image {}', image.downloadUrl)
+                    }
                 }
             }
         }
