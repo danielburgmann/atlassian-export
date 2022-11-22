@@ -96,7 +96,7 @@ Therefore, navigate in Confluence to "Administration" / "General configuration" 
 
 ## Known issues
 
-### Pages containing "/" in title
+### Pages containing "/" in title on Confluence Server
 
 The export view returned by the Confluence API will contain broken image sources.
 Therefore, all exported images and attachments will be broken.
