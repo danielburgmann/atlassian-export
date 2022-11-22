@@ -94,6 +94,13 @@ After setting up Confluence you can import a sample Confluence space "TEST" for 
 Therefore, navigate in Confluence to "Administration" / "General configuration" / "Administration - Backup & Restore"
 / "Import Confluence data" / "Upload a site or space export file" and upload the ZIP file.
 
+## Known issues
+
+### Pages containing "/" in title
+
+The export view returned by the Confluence API will contain broken image sources.
+Therefore, all exported images and attachments will be broken.
+
 ## Links
 
 * [JIRA REST API](https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/)
