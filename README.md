@@ -101,6 +101,11 @@ Therefore, navigate in Confluence to "Administration" / "General configuration" 
 The export view returned by the Confluence API will contain broken image sources.
 Therefore, all exported images and attachments will be broken.
 
+### Heavy memory consumption for large exports
+
+The tool stores all resources (images and attachments) in memory while exporting.
+This can lead to OutOfMemoryError for large exports with thousands of issues, pages, attachments or images.
+
 ## Links
 
 * [JIRA REST API](https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/)

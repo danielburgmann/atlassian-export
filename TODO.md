@@ -6,6 +6,7 @@
   * image src
   * hrefs
   * entities (0x00A0 to `&nbsp;`)
+* add disk based cache for large exports to lower memory consumption
 
 ## Confluence export
 
