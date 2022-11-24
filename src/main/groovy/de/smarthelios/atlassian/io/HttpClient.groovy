@@ -273,4 +273,7 @@ class HttpClient {
         }
     }
 
+    static String isAbsolutePath(String str) {
+        str ? str.startsWith('/') : false
+    }
 }

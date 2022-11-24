@@ -255,6 +255,9 @@ class JiraClient extends HttpClient{
         else if(isURI(image.downloadUrl)) {
             image.mimeTypeBytes = doGetBytesForUrl(image.downloadUrl)
         }
+        else if(isAbsolutePath(image.downloadUrl)) {
+            image.mimeTypeBytes = doGetBytesForUrl(baseUrl + image.downloadUrl)
+        }
         else {
             log.error 'Can not handle image downloadUrl "{}"', image.downloadUrl
         }
