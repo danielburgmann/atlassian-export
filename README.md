@@ -29,22 +29,67 @@ Find an unpacked distribution under `build/install/atl-export`.
 
 `./bin/atl-export`
 
-### Examples
-
-Exporting something from Confluence
-
-```sh
-export ATL_EXP_PW=s3cr3t # confluence user password
-
-bin/atl-export -t confluence -u user.name -o /path/to/confluence-out https://confluence.example.org TEST 'test page title'
-
-bin/atl-export -t jira -u user.name -o /path/to/jira-out https://jira.example.org "project = TEST"
-```
-
-Getting help
+Getting help:
 
 ```sh
 bin/atl-export -h
+```
+
+Setting the user password / API key:
+
+```sh
+export ATL_EXP_PW=s3cr3t
+```
+
+### Export a page with all subpages
+
+Confluence export takes tuples of space key and page titles to select the pages to export.
+
+```sh
+export ATL_EXP_PW=s3cr3t
+bin/atl-export -t confluence \
+  -u user.name \
+  -o /path/to/confluence-out \
+  https://confluence.example.org \
+  TEST 'test page title'
+```
+
+### Export a set of pages with their subpages 
+
+```sh
+export ATL_EXP_PW=s3cr3t
+bin/atl-export -t confluence \
+  -u user.name \
+  -o /path/to/confluence-out \
+  https://confluence.example.org \
+  TEST 'test page title' \
+  OTHERSPACE 'other page title' # ...
+```
+
+### Export all issues of a JIRA project 
+
+JIRA export take a
+[JQL (JIRA Query Language)](https://support.atlassian.com/jira-service-management-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+parameter. Use it to filter the export in the desired way.
+
+```sh
+export ATL_EXP_PW=s3cr3t
+bin/atl-export -t jira \
+  -u user.name \
+  -o /path/to/jira-out \
+  https://jira.example.org \
+  'project = TEST'
+```
+
+### Export all issues of two JIRA projects with two labels
+
+```sh
+export ATL_EXP_PW=s3cr3t
+bin/atl-export -t jira \
+  -u user.name \
+  -o /path/to/jira-out \
+  https://jira.example.org \
+  'project in (FOO,BAR) AND labels in ("important","obsolete")'
 ```
 
 ### Logging
