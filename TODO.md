@@ -15,6 +15,7 @@
 
 ## JIRA export
 
+* replace usage of [deprecated search API](https://developer.atlassian.com/changelog/?subid=1750765129#CHANGE-2046) in `de.smarthelios.jira.io.JiraClient` by [current API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-jql-get)
 * style issue.html
 * make detail fields for issue export configurable (esp. custom fields)
 * introduce better view model for issue.html to extract logic from template
